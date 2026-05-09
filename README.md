@@ -1,27 +1,30 @@
 # SmartHome Assistant
 
-SmartHome Assistant is a prototype system for controlling smart-home devices with natural-language commands. The project combines an Android application, a local gateway server, a rule-based command parser, an LLM-based interpreter, scenario generation, and integration with Home Assistant.
+SmartHome Assistant — прототип системы управления устройствами умного дома с помощью команд на естественном языке. Проект объединяет Android-приложение, локальный сервер-шлюз, rule-based модуль интерпретации команд, LLM-модуль, сценарный режим автоматизаций и интеграцию с Home Assistant.
 
-The system was developed as part of a master's thesis on local AI-assisted smart-home control. The main focus is not just sending commands to devices, but building a controlled processing pipeline where natural-language interpretation is separated from actual device execution.
+Система разработана в рамках магистерской ВКР, посвящённой локальному ИИ-ассистенту для управления умным домом. Основная идея проекта состоит не только в отправке команд устройствам, а в построении контролируемого контура обработки: пользовательская фраза сначала интерпретируется, затем преобразуется в структурированный формат, проходит валидацию и только после этого может быть передана в исполнительную среду.
 
-## What The System Does
+## Назначение системы
 
-- Accepts text and voice commands from an Android application.
-- Supports three command interpretation modes: `rules`, `llm`, and `llm_safe`.
-- Converts user phrases into structured commands before execution.
-- Validates commands before sending them to Home Assistant.
-- Supports quick actions for common lighting controls.
-- Generates automation scenarios from natural-language descriptions.
-- Provides scenario preview, save, list, update, and delete operations.
-- Can work with a local LLM through an OpenAI-compatible API.
-- Keeps LLM output away from direct device execution.
+Система позволяет:
 
-The current implementation is focused primarily on lighting control because lighting is a clear and practical smart-home domain: it includes on/off actions, brightness, color, color temperature, presets, and scheduled automations.
+- отправлять текстовые и голосовые команды из Android-приложения;
+- использовать три режима интерпретации: `rules`, `llm` и `llm_safe`;
+- преобразовывать пользовательские фразы в структурированные команды;
+- проверять команды перед отправкой в Home Assistant;
+- выполнять быстрые действия для типовых операций со светом;
+- формировать сценарии автоматизации из текстового описания;
+- получать предварительное представление сценария перед сохранением;
+- сохранять, просматривать, обновлять и удалять автоматизации;
+- подключать локальную LLM через OpenAI-совместимый интерфейс;
+- не допускать прямого исполнения результата LLM без программной проверки.
 
-## Architecture
+Текущая реализация в первую очередь ориентирована на управление освещением. Этот класс устройств выбран как практический и наглядный: он включает включение и выключение, изменение яркости, цвета, цветовой температуры, световые пресеты и автоматизации по времени.
+
+## Общая схема работы
 
 ```text
-Android application
+Android-приложение
         |
         | HTTP + X-API-Key
         v
@@ -29,41 +32,41 @@ SmartHome Gateway
         |
         | rules / llm / llm_safe
         v
-Command interpretation and validation
+Интерпретация и валидация команды
         |
-        | validated actions
+        | валидированные действия
         v
 Home Assistant
         |
         v
-Smart-home devices
+Устройства умного дома
 
-Optional:
-SmartHome Gateway -> OpenAI-compatible local LLM bridge -> local LLM
+Дополнительно:
+SmartHome Gateway -> OpenAI-совместимый локальный LLM-мост -> локальная LLM
 ```
 
-The gateway is the central control point. The Android application does not execute smart-home actions directly. LLM output is also not sent directly to Home Assistant: it is parsed, normalized, validated, and only then converted into executable actions.
+Сервер-шлюз является центральной точкой управления. Android-приложение не выполняет действия над устройствами напрямую. Результат LLM также не передаётся напрямую в Home Assistant: он нормализуется, валидируется и только затем преобразуется в исполнительные действия.
 
-## Repository Structure
+## Структура репозитория
 
 ```text
 .
 ├─ android_app/
-│  └─ Android client application
+│  └─ Android-приложение пользователя
 ├─ ha_addon_dist/
-│  └─ Home Assistant add-on package for the gateway
+│  └─ Пакет Home Assistant add-on для gateway
 ├─ smarthome_core/
-│  ├─ data/              Test datasets used in evaluation
-│  ├─ lexicon/           Dictionaries for rule-based interpretation
-│  ├─ registry/          Test device registry
-│  ├─ schemas/           JSON Schemas for internal command formats
-│  ├─ scripts/           Evaluation and benchmark scripts
-│  ├─ smarthome_core/    Core parser, validator, LLM and scenario logic
-│  ├─ smarthome_gateway/ Gateway HTTP API
-│  └─ tests/             Automated tests
+│  ├─ data/              Тестовые наборы для оценки
+│  ├─ lexicon/           Словари для rule-based интерпретации
+│  ├─ registry/          Тестовый реестр устройств
+│  ├─ schemas/           JSON Schema для внутренних структур
+│  ├─ scripts/           Скрипты оценки и бенчмарков
+│  ├─ smarthome_core/    Основная логика: parser, validator, LLM, scenarios
+│  ├─ smarthome_gateway/ HTTP API сервера-шлюза
+│  └─ tests/             Автоматизированные тесты
 ├─ docs/
-│  ├─ experiments/       Experiment summaries
-│  ├─ thesis_figures/    Architecture diagrams
+│  ├─ experiments/       Сводки экспериментальных результатов
+│  ├─ thesis_figures/    Схемы архитектуры
 │  └─ REPOSITORY_CONTENTS.md
 ├─ llama_openai_bridge.py
 ├─ ollama_openai_shim.py
@@ -71,66 +74,65 @@ The gateway is the central control point. The Android application does not execu
 └─ requirements_gateway.txt
 ```
 
-## Main Components
+## Основные компоненты
 
-### Android Application
+### Android-приложение
 
-The Android app provides the user interface for:
+Android-приложение используется как пользовательский клиент. Оно поддерживает:
 
-- entering text commands;
-- using push-to-talk voice input;
-- selecting a room, target device, or control profile;
-- sending quick actions;
-- creating and managing automation scenarios;
-- switching parser modes in developer mode.
+- ввод текстовых команд;
+- голосовой ввод в формате push-to-talk;
+- выбор комнаты, устройства или профиля управления;
+- быстрые действия;
+- создание и сопровождение сценариев автоматизации;
+- переключение режимов интерпретации в режиме разработчика.
 
-The Android app is located in `android_app/`.
+Код приложения находится в каталоге `android_app/`.
 
 ### SmartHome Gateway
 
-The gateway is a Python HTTP service that coordinates command processing:
+Gateway — это Python-сервис, который координирует обработку пользовательских запросов. Он выполняет следующие задачи:
 
-- receives requests from the Android app;
-- selects the interpretation mode;
-- calls the rule-based parser or the LLM interpreter;
-- validates the structured result;
-- optionally executes the action in Home Assistant;
-- supports dry-run execution for safe testing;
-- exposes scenario preview/save/list/upsert/delete operations.
+- принимает запросы от Android-приложения;
+- выбирает режим интерпретации;
+- вызывает rule-based модуль или LLM-модуль;
+- валидирует структурированный результат;
+- выполняет команду через Home Assistant либо запускает dry-run;
+- поддерживает операции сценарного режима: preview, save, list, upsert и delete.
 
-The gateway code is located in `smarthome_core/smarthome_gateway/`.
+Код gateway находится в `smarthome_core/smarthome_gateway/`.
 
-### Rule-Based Interpreter
+### Rule-based модуль
 
-The rule-based module handles common and deterministic commands using dictionaries, normalization, patterns, and device/area mappings. It is fast and predictable, which makes it useful for direct commands such as turning lights on or changing brightness.
+Rule-based модуль обрабатывает типовые команды на основе словарей, нормализации текста, шаблонов и правил. Он подходит для прямых команд, например включения света, выключения света, изменения яркости или цветовой температуры.
 
-### LLM Interpreter
+### LLM-модуль
 
-The LLM interpreter is used for less direct phrases, mood-like commands, and natural-language scenario descriptions. The gateway expects an OpenAI-compatible API, so different local LLM runtimes can be used behind the same interface.
+LLM-модуль используется для более свободных и неявных формулировок: mood-like команд, бытовых выражений и описаний сценариев. Gateway ожидает OpenAI-совместимый API, поэтому за одним интерфейсом можно использовать разные локальные LLM.
 
-### Home Assistant Integration
+### Интеграция с Home Assistant
 
-Home Assistant is used as the execution environment. The gateway sends only validated actions to Home Assistant and can be packaged as a Home Assistant add-on.
+Home Assistant используется как исполнительная среда. Gateway отправляет туда только валидированные действия. Для развёртывания внутри Home Assistant подготовлен add-on пакет.
 
-## Requirements
+## Требования
 
-### Gateway
+### Для gateway
 
-- Python 3.11 or newer.
-- Home Assistant instance.
-- Home Assistant Long-Lived Access Token or Supervisor token in add-on mode.
-- Optional local LLM server with an OpenAI-compatible API.
+- Python 3.11 или новее.
+- Экземпляр Home Assistant.
+- Long-Lived Access Token Home Assistant или Supervisor token в add-on режиме.
+- Опционально: локальный LLM-сервер с OpenAI-совместимым API.
 
-### Android Application
+### Для Android-приложения
 
 - Android Studio.
 - Java 17.
-- Android device or emulator.
-- Network access from the phone to the gateway.
+- Android-устройство или эмулятор.
+- Сетевой доступ от телефона к gateway.
 
-### Optional Voice Input Assets
+### Локальные ASR-ресурсы
 
-Local ASR assets are not committed to this repository because of their size. If voice input is required, place the models manually:
+Локальные модели распознавания речи не хранятся в репозитории из-за размера. Если нужен голосовой ввод, добавьте ресурсы вручную:
 
 ```text
 android_app/app/src/main/assets/models/vosk-model-small-ru-0.22/
@@ -138,11 +140,11 @@ android_app/app/src/main/assets/models/sherpa-onnx-small-zipformer-ru-2024-09-18
 android_app/app/libs/sherpa-onnx-1.12.34.aar
 ```
 
-The Android application can still be inspected and built after adding the required local ASR resources.
+После добавления этих файлов Android-приложение можно собрать с поддержкой локального ASR.
 
-## Running The Gateway Locally
+## Локальный запуск gateway
 
-From the repository root:
+Из корня репозитория:
 
 ```powershell
 python -m venv .venv
@@ -150,7 +152,7 @@ python -m venv .venv
 pip install -r requirements_gateway.txt
 ```
 
-Set the required environment variables:
+Задайте переменные окружения:
 
 ```powershell
 $env:HA_URL = "http://homeassistant.local:8123"
@@ -159,20 +161,20 @@ $env:GATEWAY_API_KEY = "change-me"
 $env:SH_CORE_ROOT = "."
 ```
 
-If a local LLM bridge is used:
+Если используется локальный LLM-мост:
 
 ```powershell
 $env:LLM_BASE_URL = "http://127.0.0.1:8080/v1"
 $env:LLM_MODEL = "qwen3:8b"
 ```
 
-Run the gateway:
+Запуск gateway:
 
 ```powershell
 python -m uvicorn smarthome_gateway.main:app --host 0.0.0.0 --port 8099
 ```
 
-Example dry-run request:
+Пример dry-run запроса:
 
 ```powershell
 Invoke-RestMethod -Method Post `
@@ -182,39 +184,39 @@ Invoke-RestMethod -Method Post `
   -Body '{"text":"в спальне сделай свет теплее","parser_mode":"llm_safe","dry_run":true}'
 ```
 
-## Running As Home Assistant Add-On
+## Запуск как Home Assistant add-on
 
-The add-on package is located in:
+Пакет add-on находится в каталоге:
 
 ```text
 ha_addon_dist/smarthome_gateway_next/
 ```
 
-The add-on configuration includes:
+Конфигурация add-on включает:
 
 - `gateway_api_key`;
 - `ha_url`;
-- `ha_token` or Supervisor token mode;
+- `ha_token` или режим Supervisor token;
 - `llm_base_url`;
 - `llm_model`;
-- logging and timeout settings.
+- параметры логирования и таймаутов.
 
-The default `config.yaml` contains example values only. Replace them with your local configuration before deployment.
+Файл `config.yaml` содержит примерные значения. Перед развёртыванием их нужно заменить на параметры своей локальной среды.
 
-## Android Setup
+## Настройка Android-приложения
 
-1. Open `android_app/` in Android Studio.
-2. Add ASR assets if local voice input is required.
-3. Build and install the APK.
-4. Open the app settings.
-5. Set the gateway URL, for example:
+1. Откройте каталог `android_app/` в Android Studio.
+2. Добавьте ASR-ресурсы, если нужен локальный голосовой ввод.
+3. Соберите и установите APK.
+4. Откройте настройки приложения.
+5. Укажите адрес gateway, например:
 
 ```text
 http://<gateway-host>:8099
 ```
 
-6. Set the same API key as configured in the gateway.
-7. Select the parser mode:
+6. Укажите тот же API-ключ, который задан в gateway.
+7. Выберите режим интерпретации:
 
 ```text
 rules
@@ -222,20 +224,20 @@ llm
 llm_safe
 ```
 
-For normal use, `llm_safe` is the recommended mode: rules handle clear commands, while more complex phrases can be passed to the LLM path.
+Для обычного использования рекомендуется режим `llm_safe`: прямые команды обрабатываются правилами, а более сложные формулировки могут быть переданы в LLM-контур.
 
-## LLM Bridge Options
+## Варианты LLM-моста
 
-The gateway expects an OpenAI-compatible chat completion API. Two helper scripts are included:
+Gateway ожидает OpenAI-совместимый chat completion API. В репозитории есть два вспомогательных скрипта:
 
-- `ollama_openai_shim.py` for adapting Ollama-style local models;
-- `llama_openai_bridge.py` for llama.cpp-style local inference.
+- `ollama_openai_shim.py` — адаптер для локальных моделей, запущенных через Ollama;
+- `llama_openai_bridge.py` — мост для локального инференса через llama.cpp-подобный сервер.
 
-You can also use any other local server that exposes an OpenAI-compatible `/chat/completions` endpoint.
+Также можно использовать любой другой локальный сервер, который предоставляет OpenAI-совместимый endpoint `/chat/completions`.
 
-## Test And Evaluation Data
+## Тестовые данные и эксперименты
 
-Selected datasets and experiment scripts are included for reproducibility:
+Для воспроизводимости в репозитории оставлены выбранные тестовые наборы и экспериментальные материалы:
 
 ```text
 smarthome_core/data/
@@ -243,48 +245,48 @@ smarthome_core/scripts/
 docs/experiments/
 ```
 
-The datasets include:
+В наборах данных есть:
 
-- 100 Russian lighting commands for command interpretation evaluation;
-- direct and creative command subsets;
-- 24 automation scenario prompts;
-- 50 creative bedroom-light commands used for comparison with Yandex Alice.
+- 100 русскоязычных команд управления освещением;
+- подмножества прямых и творческих команд;
+- 24 формулировки сценариев автоматизации;
+- 50 творческих команд управления светом в спальне для сравнения с Алисой.
 
-## Running Tests
+## Запуск тестов
 
-Python tests:
+Python-тесты:
 
 ```powershell
 cd smarthome_core
 python -m pytest tests
 ```
 
-Android unit tests can be run from Android Studio or Gradle after the Android project is configured.
+Android unit tests можно запускать из Android Studio или через Gradle после настройки Android-проекта.
 
-## Security Notes
+## Замечания по безопасности
 
-- Do not commit real Home Assistant tokens.
-- Do not commit real gateway API keys.
-- Do not expose the gateway outside a trusted network without additional authentication and transport security.
-- Keep LLM execution local if privacy is a requirement.
-- Use dry-run mode when testing new parser or prompt changes.
+- Не публикуйте реальные Home Assistant tokens.
+- Не публикуйте реальные gateway API keys.
+- Не открывайте gateway во внешнюю сеть без дополнительной защиты.
+- Используйте локальную LLM, если важна приватность пользовательских команд.
+- Используйте dry-run режим при тестировании новых правил, prompt-инструкций и сценариев.
 
-## What Is Not Included
+## Что не включено в репозиторий
 
-The repository does not include:
+В репозиторий намеренно не включены:
 
-- local ASR models;
-- local LLM model weights;
-- APK build artifacts;
-- Home Assistant secrets;
-- runtime logs;
-- full thesis text.
+- локальные ASR-модели;
+- веса локальных LLM;
+- APK и другие сборочные артефакты;
+- секреты Home Assistant;
+- рабочие логи;
+- полный текст ВКР.
 
-Only source code, selected reproducible datasets, experiment summaries, schemas, and diagrams are included.
+В репозитории оставлены только исходный код, выбранные воспроизводимые наборы данных, экспериментальные сводки, схемы и документация по запуску.
 
-## Documentation
+## Дополнительная документация
 
-Additional documentation is available in:
+Дополнительные материалы находятся в:
 
 ```text
 docs/REPOSITORY_CONTENTS.md
@@ -293,4 +295,4 @@ docs/experiments/
 docs/thesis_figures/
 ```
 
-The `docs/` directory is included to connect the implementation with the evaluation materials used in the thesis.
+Каталог `docs/` нужен для связи программной реализации с экспериментальными материалами, использованными при подготовке ВКР.
