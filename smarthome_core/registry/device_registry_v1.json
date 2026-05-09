@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "platform": "home_assistant",
+  "home": {
+    "name": "demo_home",
+    "timezone": "Europe/Amsterdam",
+    "language": "ru-RU"
+  },
+  "areas": [
+    {
+      "area_id": "area_living_room",
+      "name": "Гостиная",
+      "synonyms": [
+        "зал",
+        "гостинная"
+      ],
+      "devices": [
+        "device_light_living_1"
+      ]
+    },
+    {
+      "area_id": "area_kitchen",
+      "name": "Кухня",
+      "synonyms": [
+        "кухонька"
+      ],
+      "devices": [
+        "device_light_kitchen_1"
+      ]
+    },
+    {
+      "area_id": "area_bedroom",
+      "name": "Спальня",
+      "synonyms": [
+        "спалка"
+      ],
+      "devices": [
+        "device_light_bedroom_1"
+      ]
+    },
+    {
+      "area_id": "area_corridor",
+      "name": "Коридор",
+      "synonyms": [
+        "прихожая",
+        "холл"
+      ],
+      "devices": [
+        "device_light_corridor_1"
+      ]
+    },
+    {
+      "area_id": "area_bathroom",
+      "name": "Ванная",
+      "synonyms": [
+        "ванна",
+        "санузел"
+      ],
+      "devices": [
+        "device_light_bathroom_1"
+      ]
+    }
+  ],
+  "devices": [
+    {
+      "device_id": "device_light_living_1",
+      "name": "Лампа в гостиной",
+      "device_type": "light",
+      "manufacturer": "KOJIMA",
+      "model": "E27-RGB-WW-CW-10W-ZGB",
+      "protocol": "zigbee",
+      "home_assistant": {
+        "entity_id": "light.living_room_bulb_1"
+      },
+      "capabilities": {
+        "on_off": true,
+        "brightness": true,
+        "brightness_range_pct": {
+          "min": 1,
+          "max": 100
+        },
+        "rgb": true,
+        "color_temp": true,
+        "color_temp_kelvin_range": {
+          "min": 1500,
+          "max": 6500
+        },
+        "transition": true,
+        "transition_s_range": {
+          "min": 0,
+          "max": 10
+        }
+      }
+    },
+    {
+      "device_id": "device_light_kitchen_1",
+      "name": "Лампа на кухне",
+      "device_type": "light",
+      "manufacturer": "KOJIMA",
+      "model": "E27-RGB-WW-CW-10W-ZGB",
+      "protocol": "zigbee",
+      "home_assistant": {
+        "entity_id": "light.kitchen_bulb_1"
+      },
+      "capabilities": {
+        "on_off": true,
+        "brightness": true,
+        "brightness_range_pct": {
+          "min": 1,
+          "max": 100
+        },
+        "rgb": true,
+        "color_temp": true,
+        "color_temp_kelvin_range": {
+          "min": 1500,
+          "max": 6500
+        },
+        "transition": true,
+        "transition_s_range": {
+          "min": 0,
+          "max": 10
+        }
+      }
+    },
+    {
+      "device_id": "device_light_bedroom_1",
+      "name": "Лампа в спальне",
+      "device_type": "light",
+      "manufacturer": "KOJIMA",
+      "model": "E27-RGB-WW-CW-10W-ZGB",
+      "protocol": "zigbee",
+      "home_assistant": {
+        "entity_id": "light.lampa1"
+      },
+      "capabilities": {
+        "on_off": true,
+        "brightness": true,
+        "brightness_range_pct": {
+          "min": 1,
+          "max": 100
+        },
+        "rgb": true,
+        "color_temp": true,
+        "color_temp_kelvin_range": {
+          "min": 2000,
+          "max": 6535
+        },
+        "transition": true,
+        "transition_s_range": {
+          "min": 0,
+          "max": 10
+        },
+        "xy": true
+      }
+    },
+    {
+      "device_id": "device_light_corridor_1",
+      "name": "Лампа в коридоре",
+      "device_type": "light",
+      "manufacturer": "KOJIMA",
+      "model": "E27-RGB-WW-CW-10W-ZGB",
+      "protocol": "zigbee",
+      "home_assistant": {
+        "entity_id": "light.corridor_bulb_1"
+      },
+      "capabilities": {
+        "on_off": true,
+        "brightness": true,
+        "brightness_range_pct": {
+          "min": 1,
+          "max": 100
+        },
+        "rgb": true,
+        "color_temp": true,
+        "color_temp_kelvin_range": {
+          "min": 1500,
+          "max": 6500
+        },
+        "transition": true,
+        "transition_s_range": {
+          "min": 0,
+          "max": 10
+        }
+      }
+    },
+    {
+      "device_id": "device_light_bathroom_1",
+      "name": "Лампа в ванной",
+      "device_type": "light",
+      "manufacturer": "KOJIMA",
+      "model": "E27-RGB-WW-CW-10W-ZGB",
+      "protocol": "zigbee",
+      "home_assistant": {
+        "entity_id": "light.bathroom_bulb_1"
+      },
+      "capabilities": {
+        "on_off": true,
+        "brightness": true,
+        "brightness_range_pct": {
+          "min": 1,
+          "max": 100
+        },
+        "rgb": true,
+        "color_temp": true,
+        "color_temp_kelvin_range": {
+          "min": 1500,
+          "max": 6500
+        },
+        "transition": true,
+        "transition_s_range": {
+          "min": 0,
+          "max": 10
+        }
+      }
+    }
+  ],
+  "resolution_rules": {
+    "target_resolution_priority": [
+      "entity_id",
+      "area_name",
+      "context_last_area"
+    ],
+    "area_synonyms_enabled": true,
+    "default_transition_s": 0.8,
+    "brightness_zero_policy": "treat_as_turn_off",
+    "max_actions_per_utterance": 3
+  },
+  "privacy": {
+    "store_audio": false,
+    "store_transcripts": true,
+    "transcripts_retention_days": 14,
+    "log_level": "minimal",
+    "pii_redaction": true
+  }
+}

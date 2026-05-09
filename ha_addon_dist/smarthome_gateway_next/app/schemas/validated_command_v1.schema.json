@@ -1,0 +1,678 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/validated_command_v1.schema.json",
+  "title": "ValidatedCommand v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "reason_code",
+    "warnings",
+    "normalized",
+    "execution_plan"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "EXECUTABLE",
+        "NEEDS_CLARIFICATION",
+        "REJECTED",
+        "NOOP"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "enum": [
+        "OK",
+        "MISSING_TARGET",
+        "AMBIGUOUS_TARGET",
+        "UNKNOWN_AREA",
+        "UNKNOWN_ENTITY",
+        "CONFLICTING_INTENTS",
+        "INVALID_PARAMS",
+        "OUT_OF_RANGE",
+        "UNSUPPORTED_CAPABILITY",
+        "TOO_MANY_ACTIONS",
+        "SECURITY_POLICY_BLOCK"
+      ]
+    },
+    "warnings": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/$defs/Warning"
+      }
+    },
+    "normalized": {
+      "$ref": "#/$defs/Normalized"
+    },
+    "execution_plan": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/ExecutionStep"
+      }
+    },
+    "clarification": {
+      "$ref": "#/$defs/Clarification"
+    },
+    "debug": {
+      "type": "object"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "EXECUTABLE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_code": {
+            "const": "OK"
+          }
+        },
+        "required": [
+          "execution_plan"
+        ],
+        "not": {
+          "required": [
+            "clarification"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "NEEDS_CLARIFICATION"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "clarification"
+        ],
+        "properties": {
+          "execution_plan": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "REJECTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "execution_plan": {
+            "maxItems": 0
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "needed",
+        "question",
+        "options"
+      ],
+      "properties": {
+        "needed": {
+          "type": "boolean",
+          "const": true
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "Warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "path"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "CLAMPED",
+            "FALLBACK_APPLIED",
+            "PARAM_DROPPED",
+            "TARGET_RESOLVED_FROM_CONTEXT",
+            "SYNONYM_RESOLVED",
+            "UNSUPPORTED_TRANSITION_IGNORED",
+            "META_CANCEL"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "ResolvedTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "area_name",
+        "entity_ids"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "AREA",
+            "ENTITY",
+            "ALL_LIGHTS"
+          ]
+        },
+        "area_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "entity_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "AREA"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "ENTITY"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "null"
+              },
+              "entity_ids": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "ALL_LIGHTS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "null"
+              },
+              "entity_ids": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "NormalizedParams": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brightness_pct",
+        "brightness_delta_pct",
+        "rgb_color",
+        "color_temp_kelvin",
+        "color_temp_delta_k",
+        "transition_s"
+      ],
+      "properties": {
+        "brightness_pct": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 100
+        },
+        "brightness_delta_pct": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -100,
+          "maximum": 100
+        },
+        "rgb_color": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "color_temp_kelvin": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1500,
+          "maximum": 6500
+        },
+        "color_temp_delta_k": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -3000,
+          "maximum": 3000
+        },
+        "transition_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "NormalizedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "intent",
+        "target",
+        "params"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "const": "light"
+        },
+        "intent": {
+          "type": "string",
+          "enum": [
+            "TURN_ON",
+            "TURN_OFF",
+            "SET_BRIGHTNESS",
+            "ADJUST_BRIGHTNESS",
+            "SET_COLOR",
+            "SET_COLOR_TEMP",
+            "ADJUST_COLOR_TEMP"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/ResolvedTarget"
+        },
+        "params": {
+          "$ref": "#/$defs/NormalizedParams"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "TURN_OFF"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "brightness_pct": {
+                    "type": "null"
+                  },
+                  "brightness_delta_pct": {
+                    "type": "null"
+                  },
+                  "rgb_color": {
+                    "type": "null"
+                  },
+                  "color_temp_kelvin": {
+                    "type": "null"
+                  },
+                  "color_temp_delta_k": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "SET_BRIGHTNESS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "brightness_pct": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "ADJUST_BRIGHTNESS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "brightness_delta_pct": {
+                    "type": "integer",
+                    "minimum": -100,
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "SET_COLOR"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "rgb_color": {
+                    "type": "array"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "SET_COLOR_TEMP"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "color_temp_kelvin": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "ADJUST_COLOR_TEMP"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "color_temp_delta_k": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ContextUpdates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "last_area_name",
+        "last_entity_ids"
+      ],
+      "properties": {
+        "last_area_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "last_entity_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "Normalized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actions",
+        "context_updates"
+      ],
+      "properties": {
+        "actions": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/NormalizedAction"
+          }
+        },
+        "context_updates": {
+          "$ref": "#/$defs/ContextUpdates"
+        }
+      }
+    },
+    "ExecutionTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_id",
+        "area_name"
+      ],
+      "properties": {
+        "entity_id": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "area_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      }
+    },
+    "ExecutionData": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brightness_pct",
+        "brightness_step_pct",
+        "rgb_color",
+        "color_temp_kelvin",
+        "transition"
+      ],
+      "properties": {
+        "brightness_pct": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "brightness_step_pct": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -100,
+          "maximum": 100
+        },
+        "rgb_color": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        "color_temp_kelvin": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1500,
+          "maximum": 6500
+        },
+        "transition": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "ExecutionStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executor",
+        "service",
+        "target",
+        "data"
+      ],
+      "properties": {
+        "executor": {
+          "type": "string",
+          "const": "HOME_ASSISTANT"
+        },
+        "service": {
+          "type": "string",
+          "enum": [
+            "light.turn_on",
+            "light.turn_off"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/ExecutionTarget"
+        },
+        "data": {
+          "$ref": "#/$defs/ExecutionData"
+        }
+      }
+    }
+  }
+}

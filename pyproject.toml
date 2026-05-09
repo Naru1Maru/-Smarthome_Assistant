@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smarthome-core"
+version = "0.1.0"
+description = "Core engine (parser-agnostic) for Smart Home NLU: ParsedCommand -> ValidatedCommand"
+requires-python = ">=3.10"
+dependencies = [
+  "jsonschema>=4.19",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

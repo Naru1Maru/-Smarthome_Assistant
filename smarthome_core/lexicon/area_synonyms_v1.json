@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "language": "ru-RU",
+  "normalization": {
+    "lowercase": true,
+    "trim": true,
+    "collapse_spaces": true,
+    "yo_to_e": true,
+    "punctuation_strip": true
+  },
+  "canonical_areas": [
+    {
+      "name": "Гостиная",
+      "canonical_id": "area_living_room",
+      "synonyms": [
+        "зал",
+        "гостинная",
+        "гостевая",
+        "гостиная",
+        "living room",
+        "lounge"
+      ]
+    },
+    {
+      "name": "Кухня",
+      "canonical_id": "area_kitchen",
+      "synonyms": [
+        "кухня",
+        "кухонька",
+        "кухонка",
+        "kitchen"
+      ]
+    },
+    {
+      "name": "Спальня",
+      "canonical_id": "area_bedroom",
+      "synonyms": [
+        "спальня",
+        "спалка",
+        "спальная",
+        "bedroom"
+      ]
+    },
+    {
+      "name": "Коридор",
+      "canonical_id": "area_corridor",
+      "synonyms": [
+        "коридор",
+        "прихожая",
+        "холл",
+        "hall",
+        "entryway",
+        "вестибюль"
+      ]
+    },
+    {
+      "name": "Ванная",
+      "canonical_id": "area_bathroom",
+      "synonyms": [
+        "ванная",
+        "ванна",
+        "санузел",
+        "туалет",
+        "bathroom",
+        "wc",
+        "уборная"
+      ]
+    }
+  ],
+  "notes": [
+    "Синонимы применяются на стадии валидации/нормализации цели (target.area_name).",
+    "Если введённая комната совпадает с несколькими каноническими — возвращаем NEEDS_CLARIFICATION + AMBIGUOUS_TARGET.",
+    "Если комната не найдена — NEEDS_CLARIFICATION + UNKNOWN_AREA.",
+    "???????????? ???????? ?????????, ?? ??? ??????-ASR ??????????????? ????????????? ????????."
+  ]
+}

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860">
+  <defs>
+    <style>
+      .label { font: 600 22px 'Segoe UI', Arial, sans-serif; fill: #111; }
+      .small { font: 400 18px 'Segoe UI', Arial, sans-serif; fill: #111; }
+      .box { fill: #fff; stroke: #111; stroke-width: 2.5; rx: 18; ry: 18; }
+      .line { stroke: #111; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect x="20" y="20" width="1360" height="820" fill="#fff" stroke="#111" stroke-width="2"/>
+
+  <rect class="box" x="80" y="250" width="240" height="120"/>
+  <text x="200" y="300" text-anchor="middle" class="label">Android-приложение</text>
+  <text x="200" y="335" text-anchor="middle" class="small">HTTP-запросы</text>
+
+  <rect class="box" x="460" y="140" width="350" height="410"/>
+  <text x="635" y="190" text-anchor="middle" class="label">Gateway / FastAPI</text>
+  <text x="510" y="240" class="small">GET  /health</text>
+  <text x="510" y="275" class="small">GET  /v1/readiness</text>
+  <text x="510" y="310" class="small">GET  /v1/catalog</text>
+  <text x="510" y="355" class="small">POST /v1/command</text>
+  <text x="510" y="390" class="small">POST /v1/quick-action</text>
+  <text x="510" y="425" class="small">POST /v1/scenario/preview</text>
+  <text x="510" y="460" class="small">POST /v1/scenario/save</text>
+  <text x="510" y="495" class="small">POST /v1/scenario/upsert</text>
+  <text x="510" y="530" class="small">POST /v1/scenario/delete</text>
+
+  <rect class="box" x="920" y="80" width="320" height="120"/>
+  <text x="1080" y="130" text-anchor="middle" class="label">Командный контур</text>
+  <text x="1080" y="165" text-anchor="middle" class="small">parse → validate → execute</text>
+
+  <rect class="box" x="920" y="270" width="320" height="120"/>
+  <text x="1080" y="320" text-anchor="middle" class="label">Сценарный контур</text>
+  <text x="1080" y="355" text-anchor="middle" class="small">preview → save / upsert / delete</text>
+
+  <rect class="box" x="920" y="460" width="320" height="120"/>
+  <text x="1080" y="510" text-anchor="middle" class="label">Сервисные функции</text>
+  <text x="1080" y="545" text-anchor="middle" class="small">catalog, readiness, журнал</text>
+
+  <rect class="box" x="460" y="610" width="350" height="120"/>
+  <text x="635" y="660" text-anchor="middle" class="label">Журнал `commands.jsonl`</text>
+  <text x="635" y="695" text-anchor="middle" class="small">статусы, ошибки, timing</text>
+
+  <line class="line" x1="320" y1="310" x2="460" y2="310"/>
+  <line class="line" x1="810" y1="210" x2="920" y2="140"/>
+  <line class="line" x1="810" y1="320" x2="920" y2="330"/>
+  <line class="line" x1="810" y1="460" x2="920" y2="520"/>
+  <line class="line" x1="635" y1="550" x2="635" y2="610"/>
+</svg>

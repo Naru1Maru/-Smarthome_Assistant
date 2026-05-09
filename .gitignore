@@ -1,0 +1,71 @@
+﻿# Android
+*.iml
+.gradle/
+/local.properties
+/.idea/
+*/build/
+app/build/
+*.apk
+.cxx/
+/.settings/
+*.keystore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+.venv
+.envrc
+
+# Logs & data
+*.log
+*.err.log
+*.out.log
+*.tmp
+.idea/
+*.db
+.swp
+.DS_Store
+Thumbs.db
+
+# Models & checkpoints
+Models/
+**/models/
+**/ggml-model*
+Qwen*
+*.gguf
+
+# Home Assistant runtime files
+homeassistant_backup/
+*.db-wal
+*.db-shm
+
+# Notebooks and misc
+.ipynb_checkpoints/
+*.ipynb
+
+# Android specific
+**/local.properties
+android_app/.gradle/
+android_app/.idea/
+android_app/.cxx/
+android_app/app/build/
+android_app/build/
+android_app/**/build/
+
+# Local workspace artifacts
+.android-user-home/
+.gradle-user-home/
+.pytest_tmp_run/
+gateway_logs_live/
+smarthome_gateway_next_old/
+smarthome_gateway_addon_next_v*.zip
+smarthome_core/.pytest_tmp/
+smarthome_core/gw_auto*/
+
+# Large local runtime assets are intentionally not committed.
+android_app/app/src/main/assets/models/
+android_app/app/libs/*.aar

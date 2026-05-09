@@ -1,0 +1,489 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/schemas/parsed_command_v1.schema.json",
+  "title": "ParsedCommand v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "actions"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "ParsedCommand schema version."
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/ParsedAction"
+      }
+    },
+    "clarification": {
+      "$ref": "#/$defs/Clarification"
+    }
+  },
+  "$defs": {
+    "Clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "needed",
+        "question",
+        "options"
+      ],
+      "properties": {
+        "needed": {
+          "type": "boolean"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "RGBColor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "name",
+        "rgb"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "const": "rgb"
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rgb": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          }
+        }
+      }
+    },
+    "Target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "area_name",
+        "entity_ids"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "enum": [
+            "AREA",
+            "ENTITY",
+            "ALL_LIGHTS",
+            "UNSPECIFIED"
+          ]
+        },
+        "area_name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "entity_ids": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "AREA"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "entity_ids": {
+                "maxItems": 0
+              }
+            },
+            "required": [
+              "area_name"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "ENTITY"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "null"
+              },
+              "entity_ids": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "ALL_LIGHTS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "null"
+              },
+              "entity_ids": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "scope": {
+                "const": "UNSPECIFIED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "area_name": {
+                "type": "null"
+              },
+              "entity_ids": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Params": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brightness",
+        "brightness_delta",
+        "color",
+        "color_temp_kelvin",
+        "color_temp_delta_k",
+        "transition_s"
+      ],
+      "properties": {
+        "brightness": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        },
+        "brightness_delta": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -100,
+          "maximum": 100
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/RGBColor"
+            }
+          ]
+        },
+        "color_temp_kelvin": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1500,
+          "maximum": 6500
+        },
+        "color_temp_delta_k": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": -3000,
+          "maximum": 3000
+        },
+        "transition_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "ParsedAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "intent",
+        "target",
+        "params"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "const": "light"
+        },
+        "intent": {
+          "type": "string",
+          "enum": [
+            "TURN_ON",
+            "TURN_OFF",
+            "SET_BRIGHTNESS",
+            "ADJUST_BRIGHTNESS",
+            "SET_COLOR",
+            "SET_COLOR_TEMP",
+            "ADJUST_COLOR_TEMP",
+            "CANCEL"
+          ]
+        },
+        "target": {
+          "$ref": "#/$defs/Target"
+        },
+        "params": {
+          "$ref": "#/$defs/Params"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "TURN_OFF"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "properties": {
+                  "brightness": {
+                    "type": "null"
+                  },
+                  "brightness_delta": {
+                    "type": "null"
+                  },
+                  "color": {
+                    "type": "null"
+                  },
+                  "color_temp_kelvin": {
+                    "type": "null"
+                  },
+                  "color_temp_delta_k": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "SET_BRIGHTNESS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "required": [
+                  "brightness"
+                ],
+                "properties": {
+                  "brightness": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "brightness_delta": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "ADJUST_BRIGHTNESS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "required": [
+                  "brightness_delta"
+                ],
+                "properties": {
+                  "brightness": {
+                    "type": "null"
+                  },
+                  "brightness_delta": {
+                    "type": "integer",
+                    "minimum": -100,
+                    "maximum": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "SET_COLOR"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "required": [
+                  "color"
+                ],
+                "properties": {
+                  "color": {
+                    "$ref": "#/$defs/RGBColor"
+                  },
+                  "color_temp_kelvin": {
+                    "type": "null"
+                  },
+                  "color_temp_delta_k": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "SET_COLOR_TEMP"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "required": [
+                  "color_temp_kelvin"
+                ],
+                "properties": {
+                  "color": {
+                    "type": "null"
+                  },
+                  "color_temp_kelvin": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "minimum": 1500,
+                    "maximum": 6500
+                  },
+                  "color_temp_delta_k": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "intent": {
+                "const": "ADJUST_COLOR_TEMP"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "required": [
+                  "color_temp_delta_k"
+                ],
+                "properties": {
+                  "color": {
+                    "type": "null"
+                  },
+                  "color_temp_kelvin": {
+                    "type": "null"
+                  },
+                  "color_temp_delta_k": {
+                    "type": "integer",
+                    "minimum": -3000,
+                    "maximum": 3000
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

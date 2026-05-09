@@ -1,0 +1,24 @@
+{"id":"S001","category":"time_multi","expected_class":"supported_core","text":"каждый день в 20:00 включай в спальне теплый свет, а в 00:00 выключай его"}
+{"id":"S002","category":"time_color_temp_relative","expected_class":"supported_core","text":"в 19:00 делай свет в спальне холоднее"}
+{"id":"S003","category":"time_brightness_abs","expected_class":"supported_core","text":"каждый день в 23:30 приглушай свет в спальне до 20%"}
+{"id":"S004","category":"time_scene_like","expected_class":"supported_core","text":"в 07:30 включай на кухне яркий дневной свет"}
+{"id":"S005","category":"time_weekend","expected_class":"supported_core","text":"по выходным в 10:00 делай в гостиной уютный свет"}
+{"id":"S006","category":"time_turn_off","expected_class":"supported_core","text":"каждый день в 01:00 выключай свет в коридоре"}
+{"id":"S007","category":"time_turn_on","expected_class":"supported_core","text":"в 18:45 включай в ванной свет"}
+{"id":"S008","category":"time_brightness_abs","expected_class":"supported_core","text":"по будням в 08:00 ставь на кухне яркость света 70%"}
+{"id":"S009","category":"time_color_temp_abs","expected_class":"supported_core","text":"каждый день в 21:00 включай в спальне теплый свет 2700 кельвин"}
+{"id":"S010","category":"time_color_temp_abs","expected_class":"supported_core","text":"в 09:00 делай на кухне нейтральный свет 4000 кельвин"}
+{"id":"S011","category":"time_color_rgb","expected_class":"supported_core","text":"в 22:00 включай в гостиной синий свет"}
+{"id":"S012","category":"time_color_rgb","expected_class":"supported_core","text":"каждую пятницу в 21:30 включай в гостиной красный свет"}
+{"id":"S013","category":"time_brightness_delta","expected_class":"supported_core","text":"каждый день в 22:30 делай свет в спальне немного тусклее"}
+{"id":"S014","category":"time_brightness_delta","expected_class":"supported_core","text":"в 07:00 делай свет на кухне ярче"}
+{"id":"S015","category":"time_scene_like","expected_class":"supported_core","text":"по будням в 06:45 включай в спальне мягкий утренний свет"}
+{"id":"S016","category":"time_scene_like","expected_class":"supported_core","text":"каждый день в 20:30 делай в гостиной свет для фильма"}
+{"id":"S017","category":"time_multi","expected_class":"supported_core","text":"в 19:30 включай в гостиной теплый свет на 50%, а в 23:00 выключай его"}
+{"id":"S018","category":"time_multi_area","expected_class":"supported_core","text":"каждый день в 21:00 включай теплый свет в спальне и в гостиной"}
+{"id":"S019","category":"time_weekdays","expected_class":"supported_core","text":"по будням в 07:15 включай на кухне дневной свет"}
+{"id":"S020","category":"time_weekend","expected_class":"supported_core","text":"по выходным в 23:00 приглушай свет в гостиной до 30%"}
+{"id":"S021","category":"conditional_borderline","expected_class":"boundary_case","text":"если после 19:00 в спальне есть движение и освещенность ниже 30 люкс, включай свет на 40%"}
+{"id":"S022","category":"conditional_borderline","expected_class":"boundary_case","text":"если вечером в коридоре кто-то проходит, включай мягкий свет на 2 минуты"}
+{"id":"S023","category":"sensor_borderline","expected_class":"boundary_case","text":"когда на кухне становится темнее 50 люкс, включай теплый свет"}
+{"id":"S024","category":"ambiguous_borderline","expected_class":"boundary_case","text":"вечером делай дома уютно"}

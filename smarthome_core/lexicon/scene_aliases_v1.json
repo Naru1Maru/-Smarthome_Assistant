@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0",
+  "language": "ru-RU",
+  "domain": "light",
+  "scenes": [
+    {
+      "id": "SUNSET",
+      "patterns": [
+        "как в закате",
+        "закат",
+        "закатный свет",
+        "вечерний теплый свет"
+      ],
+      "summary": "Теплый вечерний свет без резкой яркости.",
+      "defaults": {
+        "brightness": 38,
+        "color_temp_kelvin": 2600,
+        "transition_s": 0.8
+      }
+    },
+    {
+      "id": "CINEMA",
+      "patterns": [
+        "как в кинотеатре",
+        "кинотеатр",
+        "для фильма",
+        "режим кино"
+      ],
+      "summary": "Очень приглушенный теплый свет для просмотра.",
+      "defaults": {
+        "brightness": 18,
+        "color_temp_kelvin": 2700,
+        "transition_s": 0.8
+      }
+    },
+    {
+      "id": "NIGHT_PATH",
+      "patterns": [
+        "для ночного прохода",
+        "ночной проход",
+        "ночной режим",
+        "ночник"
+      ],
+      "summary": "Слабый теплый свет, чтобы пройти ночью.",
+      "defaults": {
+        "brightness": 12,
+        "color_temp_kelvin": 2400,
+        "transition_s": 0.6
+      }
+    },
+    {
+      "id": "SOFT_COMFORT",
+      "patterns": [
+        "не режь глаза",
+        "мягкий свет",
+        "помягче",
+        "поприятнее",
+        "уютнее"
+      ],
+      "summary": "Мягкий комфортный свет без ослепляющей яркости.",
+      "defaults": {
+        "brightness": 32,
+        "color_temp_kelvin": 3000,
+        "transition_s": 0.8
+      }
+    },
+    {
+      "id": "RELAX",
+      "patterns": [
+        "для отдыха",
+        "релакс",
+        "спокойный свет",
+        "расслабляющий свет"
+      ],
+      "summary": "Спокойный теплый свет средней-низкой яркости.",
+      "defaults": {
+        "brightness": 28,
+        "color_temp_kelvin": 2900,
+        "transition_s": 0.8
+      }
+    },
+    {
+      "id": "FOCUS",
+      "patterns": [
+        "для работы",
+        "рабочий свет",
+        "почитать",
+        "для чтения"
+      ],
+      "summary": "Более яркий нейтрально-холодный свет для концентрации.",
+      "defaults": {
+        "brightness": 75,
+        "color_temp_kelvin": 5000,
+        "transition_s": 0.6
+      }
+    }
+  ]
+}

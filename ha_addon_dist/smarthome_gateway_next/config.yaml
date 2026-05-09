@@ -1,0 +1,48 @@
+name: "SmartHome Gateway Next"
+slug: "smarthome_gateway_next"
+version: "1.2.12"
+description: "Parallel test add-on with scenario list/upsert/delete API, project cleanup on delete, strict include detection, robust scenario save/activation, /config mount support, stabilized scenario preview, readiness, parser modes and quick actions"
+arch:
+  - aarch64
+  - armv7
+  - amd64
+  - i386
+startup: services
+boot: auto
+init: false
+
+# Allow access to Home Assistant Core API via Supervisor proxy
+homeassistant_api: true
+map:
+  - config:rw
+
+ports:
+  8099/tcp: 8109
+
+options:
+  gateway_api_key: "change-me"
+  # Recommended inside HA OS add-on: go through Supervisor proxy to Core
+  ha_url: "http://supervisor/core"
+  # Leave empty if using supervisor token
+  ha_token: ""
+  llm_base_url: "http://host.docker.internal:8080"
+  llm_model: "qwen3:8b"
+  # If true and ha_token empty, the add-on will use SUPERVISOR_TOKEN automatically
+  use_supervisor_token: true
+  sh_core_root: "/app/app"
+  log_dir: "/data"
+  ha_verify_tls: true
+  ha_timeout_s: 10
+
+schema:
+  gateway_api_key: str
+  ha_url: str
+  # optional, because we can use supervisor token
+  ha_token: str?
+  llm_base_url: str?
+  llm_model: str?
+  use_supervisor_token: bool?
+  sh_core_root: str
+  log_dir: str
+  ha_verify_tls: bool?
+  ha_timeout_s: float?
